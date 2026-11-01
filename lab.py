@@ -1,10 +1,12 @@
 """Local research CLI: retrieval, optional Ollama RAG, task queue and experiments."""
 import argparse
 from collections import Counter
+from contextlib import closing
 from datetime import datetime, timezone
 import hashlib
 import json
 import math
+import os
 from pathlib import Path
 import re
 import sqlite3
@@ -72,6 +74,7 @@ def index_documents(folder, index_path, embed_model=None):
 
 def search(index_path,query,k=3):
     if not query.strip() or not 1 <= k <= 20: raise ValueError('질문을 입력하고 k는 1~20으로 지정하세요.')
+    if not Path(index_path).is_file(): raise ValueError('인덱스가 없습니다. 먼저 `python lab.py index 문서폴더`를 실행하세요.')
     data=json.loads(Path(index_path).read_text(encoding='utf-8'))
     q=tokens(query); qv=ollama('embed',{'model':data['model'],'input':query})['embeddings'][0] if data['mode']=='ollama' else None
     results=[]
@@ -98,7 +101,8 @@ def ask(index_path,query,model,k=3):
 
 def task_action(db_path,action,title=None,role='researcher',task_id=None,status=None):
     Path(db_path).parent.mkdir(parents=True,exist_ok=True)
-    with sqlite3.connect(db_path) as db:
+    # Windows에서는 연결을 닫지 않으면 DB 파일이 잠긴 채 남는다. 트랜잭션(with db)과 별개로 반드시 닫는다.
+    with closing(sqlite3.connect(db_path)) as db, db:
         db.row_factory=sqlite3.Row
         db.execute('CREATE TABLE IF NOT EXISTS tasks(id TEXT PRIMARY KEY,title TEXT,role TEXT,status TEXT)')
         if action=='add':
@@ -119,7 +123,10 @@ def experiment(script,folder,timeout=60):
     dest=Path(folder)/ident; dest.mkdir(parents=True)
     start=time.monotonic(); expired=False
     try:
-        p=subprocess.run([sys.executable,str(script)],cwd=script.parent,capture_output=True,text=True,timeout=timeout)
+        # Windows 기본 인코딩(cp949)과 무관하게 실험 출력을 UTF-8로 주고받는다.
+        env=dict(os.environ,PYTHONIOENCODING='utf-8',PYTHONUTF8='1')
+        p=subprocess.run([sys.executable,str(script)],cwd=script.parent,capture_output=True,text=True,
+                         encoding='utf-8',errors='replace',env=env,timeout=timeout)
         code,stdout,stderr=p.returncode,p.stdout,p.stderr
     except subprocess.TimeoutExpired as e:
         expired=True; code=-1
