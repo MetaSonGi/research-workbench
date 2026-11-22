@@ -1,7 +1,6 @@
 # 에이전트 연구실 (hyoki-agent-lab)
 
-> **관련 저장소 구분** — 이 저장소는 **경량 CLI 패키지판**입니다: BM25 검색, Ollama RAG, 칸반 작업, 수치를 직접 입력하는 실험 기록을 `python -m agentlab` 하나로 씁니다.
-> 실험 스크립트를 실제로 실행·기록하고 임베딩 RAG를 쓰는 **실행형 정식판**은 [research-workbench](https://github.com/MetaSonGi/research-workbench)입니다.
+> 📦 이 폴더는 [research-workbench](https://github.com/MetaSonGi/research-workbench) 저장소로 통합되었습니다 (원래 저장소: hyoki-agent-lab, 보관됨).
 
 
 내 문서를 검색하고(BM25), 검색 결과로 Ollama에게 답을 받는 **RAG**, 그리고 **작업 관리·실험 기록·결과 비교**를 하나로 묶은 명령줄 도구예요. 외부 패키지 없이 Python 표준 라이브러리만 써요.

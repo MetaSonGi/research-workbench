@@ -1,5 +1,8 @@
 # MetaSonGi RAG Lab
 
+> 📦 이 폴더는 [research-workbench](https://github.com/MetaSonGi/research-workbench) 저장소로 통합되었습니다 (원래 저장소: rag-search-lab, 보관됨).
+
+
 문서 검색부터 근거 기반 답변까지 직접 구현하고 관찰하는 독립 RAG 실험 프로젝트입니다.
 
 ## 현재 상태

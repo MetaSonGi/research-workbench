@@ -1,10 +1,18 @@
 # 효기 에이전트 연구실
 
-> **관련 저장소 구분** — 이 저장소는 **실행형 정식판**입니다: 실험 스크립트를 직접 실행해 결과를 기록하고, Ollama 임베딩 RAG와 역할별 작업 큐를 제공합니다.
-> 설치 없이 가볍게 쓰는 **경량 CLI 패키지판**은 [hyoki-agent-lab](https://github.com/MetaSonGi/hyoki-agent-lab)(BM25 검색, 수동 실험 기록)입니다.
-
-
 문서 근거 검색, 선택적 Ollama RAG, 역할별 수동 작업 큐와 로컬 Python 실험 결과를 관리하는 워크벤치입니다. **자율 멀티 에이전트·브라우저 조작·실제 로봇 제어는 구현하지 않았습니다.**
+
+## 함께 들어 있는 프로젝트
+
+비슷한 기능의 저장소를 이 저장소 하나로 합쳤습니다. 폴더마다 따로 실행되며, 실행 방법은 각 폴더의 README에 있습니다.
+
+| 폴더 | 원래 저장소 | 내용 |
+|---|---|---|
+| `/` (루트) | research-workbench | 실행형 정식판: 실험 스크립트 실행 기록, 임베딩 RAG, 역할별 작업 큐 |
+| [`hyoki-agent-lab/`](hyoki-agent-lab/) | [hyoki-agent-lab](https://github.com/MetaSonGi/hyoki-agent-lab) | 경량 CLI판: BM25 검색·Ollama RAG·칸반 (`python -m agentlab`) |
+| [`rag-search-lab/`](rag-search-lab/) | [rag-search-lab](https://github.com/MetaSonGi/rag-search-lab) | RAG 학습용: 문서 수집·청킹·임베딩·벡터 검색·Top-K·출처 표시 답변·검색 평가 |
+
+원래 저장소는 보관(archive) 처리되어 읽기 전용입니다. 합치기 전 커밋 기록도 그대로 남아 있습니다 (`git log -- <폴더>`).
 
 ## 바로 실행 — Python 3.11+, 추가 패키지 없음
 
