@@ -1,4 +1,4 @@
-import sqlite3, math, hashlib, re, urllib.request
+import contextlib, sqlite3, math, hashlib, re, urllib.request
 DEFAULT_PORT=8766
 DIM=512
 
@@ -13,8 +13,16 @@ def chunks(text,size=500,overlap=80):
  if not text.strip():raise ValueError('empty document')
  return [text[i:i+size] for i in range(0,len(text),size-overlap)]
 
+@contextlib.contextmanager
 def db():
- c=sqlite3.connect(ROOT/'vectors.sqlite3');c.execute('CREATE TABLE IF NOT EXISTS chunks(id INTEGER PRIMARY KEY,source TEXT,part INTEGER,text TEXT,vector TEXT)');return c
+ # 'with sqlite3.connect()' only commits; close explicitly so the file is released (Windows locks open files)
+ c=sqlite3.connect(ROOT/'vectors.sqlite3')
+ try:
+  with c:
+   c.execute('CREATE TABLE IF NOT EXISTS chunks(id INTEGER PRIMARY KEY,source TEXT,part INTEGER,text TEXT,vector TEXT)')
+   yield c
+ finally:
+  c.close()
 
 def ingest(source,text):
  if not isinstance(source,str) or not source.strip() or len(source)>200:raise ValueError('invalid source')
